@@ -43,5 +43,5 @@ public class Student {
     private String processLearningId;
 
     @Column(name = "registration_date")
-    private LocalDateTime registrationDate;
+    private LocalDate registrationDate;
 }
