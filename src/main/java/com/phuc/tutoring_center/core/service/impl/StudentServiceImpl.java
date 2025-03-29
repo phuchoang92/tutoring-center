@@ -5,13 +5,11 @@ import com.phuc.tutoring_center.core.entity.Student;
 import com.phuc.tutoring_center.core.repository.StudentRepository;
 import com.phuc.tutoring_center.core.service.StudentService;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -20,9 +18,10 @@ public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     @Override
     public Student registerStudent(StudentRegisterDTO registerDTO) {
+        validateRegisterRequest(registerDTO);
         Student student = studentRepository.findByPhoneNumber(registerDTO.getPhoneNumber())
                 .orElse(null);
-        if (Objects.isNull(student)){
+        if (!Objects.isNull(student)){
             throw new RuntimeException("This phone number has existed");
         }
         Student newStudent = Student.builder()
@@ -30,7 +29,7 @@ public class StudentServiceImpl implements StudentService {
                 .age(registerDTO.getAge())
                 .name(registerDTO.getName())
                 .address(registerDTO.getAddress())
-                .registrationDate(LocalDateTime.now())
+                .registrationDate(LocalDate.now())
                 .phoneNumber(registerDTO.getPhoneNumber())
                 .dateOfBirth(registerDTO.getDateOfBirth())
                 .build();
@@ -51,5 +50,9 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public List<Student> listStudentsByClass() {
         return null;
+    }
+
+    boolean validateRegisterRequest(StudentRegisterDTO registerDTO){
+        return !Objects.isNull(registerDTO.getPhoneNumber());
     }
 }
