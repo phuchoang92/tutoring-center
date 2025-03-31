@@ -16,12 +16,16 @@ import java.time.LocalDate;
 public class StudentRegisterDTO {
     private String name;
 
-    private Integer age;
-
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate dateOfBirth;
 
     private String address;
 
     private String phoneNumber;
+
+    private String email;
+
+    private String password;
+
+    private String currentSchool;
 }

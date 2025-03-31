@@ -24,9 +24,6 @@ public class Student {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "age", nullable = false)
-    private Integer age;
-
     @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
 
@@ -44,4 +41,13 @@ public class Student {
 
     @Column(name = "registration_date")
     private LocalDate registrationDate;
+
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "current_school")
+    private String currentSchool;
 }
