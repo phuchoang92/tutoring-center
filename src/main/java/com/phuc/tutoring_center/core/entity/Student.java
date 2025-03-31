@@ -24,9 +24,6 @@ public class Student {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "age", nullable = false)
-    private Integer age;
-
     @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
 
