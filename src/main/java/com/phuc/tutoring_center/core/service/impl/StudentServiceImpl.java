@@ -4,34 +4,43 @@ import com.phuc.tutoring_center.core.dto.request.StudentRegisterDTO;
 import com.phuc.tutoring_center.core.entity.Student;
 import com.phuc.tutoring_center.core.repository.StudentRepository;
 import com.phuc.tutoring_center.core.service.StudentService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 @Service
-@RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
+
+    public StudentServiceImpl(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
+    }
+
     @Override
     public Student registerStudent(StudentRegisterDTO registerDTO) {
-        validateRegisterRequest(registerDTO);
+        if (!validateRegisterRequest(registerDTO)){
+            throw new RuntimeException("Invalid field");
+        }
         Student student = studentRepository.findByPhoneNumber(registerDTO.getPhoneNumber())
                 .orElse(null);
         if (!Objects.isNull(student)){
             throw new RuntimeException("This phone number has existed");
         }
+        String passwordHashed = BCrypt.hashpw(registerDTO.getPassword(), BCrypt.gensalt(12));
         Student newStudent = Student.builder()
                 .studentId(String.valueOf(UUID.randomUUID()))
-                .age(registerDTO.getAge())
                 .name(registerDTO.getName())
                 .address(registerDTO.getAddress())
                 .registrationDate(LocalDate.now())
                 .phoneNumber(registerDTO.getPhoneNumber())
                 .dateOfBirth(registerDTO.getDateOfBirth())
+                .currentSchool(registerDTO.getCurrentSchool())
+                .email(registerDTO.getEmail())
+                .password(passwordHashed)
                 .build();
         studentRepository.save(newStudent);
         return newStudent;

@@ -44,4 +44,13 @@ public class Student {
 
     @Column(name = "registration_date")
     private LocalDate registrationDate;
+
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "current_school")
+    private String currentSchool;
 }
