@@ -4,6 +4,7 @@ import com.phuc.tutoring_center.core.dto.request.StudentRegisterDTO;
 import com.phuc.tutoring_center.core.entity.Student;
 import com.phuc.tutoring_center.core.repository.StudentRepository;
 import com.phuc.tutoring_center.core.service.StudentService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ import java.util.Objects;
 import java.util.UUID;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
+@Slf4j
 @Service
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
@@ -22,6 +24,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student registerStudent(StudentRegisterDTO registerDTO) {
+        log.info("Start register student with request: {}", registerDTO);
         if (!validateRegisterRequest(registerDTO)){
             throw new RuntimeException("Invalid field");
         }
