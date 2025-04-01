@@ -1,7 +1,7 @@
 package com.phuc.tutoring_center.core.service.impl;
 
-import com.phuc.tutoring_center.core.dto.request.StudentRegisterDTO;
-import com.phuc.tutoring_center.core.entity.Student;
+import com.phuc.tutoring_center.core.domain.dto.request.StudentRegisterDTO;
+import com.phuc.tutoring_center.core.domain.entity.Student;
 import com.phuc.tutoring_center.core.repository.StudentRepository;
 import com.phuc.tutoring_center.core.service.StudentService;
 import lombok.extern.slf4j.Slf4j;

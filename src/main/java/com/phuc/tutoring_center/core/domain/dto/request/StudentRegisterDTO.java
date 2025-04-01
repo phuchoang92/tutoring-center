@@ -1,4 +1,4 @@
-package com.phuc.tutoring_center.core.dto.request;
+package com.phuc.tutoring_center.core.domain.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

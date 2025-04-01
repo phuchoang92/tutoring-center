@@ -1,4 +1,4 @@
-package com.phuc.tutoring_center.core.entity;
+package com.phuc.tutoring_center.core.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

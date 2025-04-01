@@ -1,7 +1,7 @@
 package com.phuc.tutoring_center.core.controller;
 
-import com.phuc.tutoring_center.core.dto.request.LoginRequest;
-import com.phuc.tutoring_center.core.dto.response.JwtResponse;
+import com.phuc.tutoring_center.core.domain.dto.request.LoginRequest;
+import com.phuc.tutoring_center.core.domain.dto.response.JwtResponse;
 import com.phuc.tutoring_center.core.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

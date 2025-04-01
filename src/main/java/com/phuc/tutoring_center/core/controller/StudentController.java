@@ -1,6 +1,6 @@
 package com.phuc.tutoring_center.core.controller;
 
-import com.phuc.tutoring_center.core.dto.request.StudentRegisterDTO;
+import com.phuc.tutoring_center.core.domain.dto.request.StudentRegisterDTO;
 import com.phuc.tutoring_center.core.service.StudentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

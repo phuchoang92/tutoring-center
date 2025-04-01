@@ -1,4 +1,4 @@
-package com.phuc.tutoring_center.core.dto;
+package com.phuc.tutoring_center.core.domain.dto.response;
 
 public class Status {
     private String code;
