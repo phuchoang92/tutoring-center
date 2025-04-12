@@ -5,33 +5,35 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Set;
-
+import java.util.UUID;
 
 @Entity
+@Table(name = "user_info")
 @Getter
 @Setter
 @ToString
-@Builder
-@Table(name = "students")
-@AllArgsConstructor
-@RequiredArgsConstructor
-public class Student {
+public class UserInfo {
     @Id
-    @Column(name = "student_id", nullable = false)
-    private String studentId;
+    @Column(name = "id", nullable = false)
+    private UUID id;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "student")
-    @ToString.Exclude
-    private Set<Register> registers;
+    @Column(name = "full_name", nullable = false)
+    private String fullName;
 
-    @Column(name = "current_school")
-    private String currentSchool;
+    @Column(name = "identity_id", unique = true)
+    private String identityId;
+
+    @Column(name = "date_of_birth", nullable = false)
+    private LocalDate dateOfBirth;
+
+    @Column(name = "address", nullable = false)
+    private String address;
 
     @Column(name = "created_at")
     @CreationTimestamp

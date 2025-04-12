@@ -1,32 +1,31 @@
 package com.phuc.tutoring_center.core.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.UUID;
 
 @Entity
+@Builder
 @Getter
 @Setter
-@RequiredArgsConstructor
 @AllArgsConstructor
-@Table(name = "subject")
-public class Subject {
+@RequiredArgsConstructor
+@Table(name = "file")
+public class File {
     @Id
-    @Column(name = "subject_id")
-    private String subjectId;
+    @Column(name = "file_id")
+    private UUID fileId;
 
-    @Column(name = "subject_name")
-    private String subjectName;
+    @Column(name = "file_url")
+    private String fileUrl;
 
-    @ManyToMany(mappedBy = "subjects")
-    private Set<Teacher> teachers;
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
 
     @Column(name = "created_at")
     @CreationTimestamp

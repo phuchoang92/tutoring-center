@@ -1,32 +1,34 @@
 package com.phuc.tutoring_center.core.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.time.LocalDate;
 
 @Entity
+@Table(name = "registers")
 @Getter
 @Setter
+@ToString
 @RequiredArgsConstructor
-@AllArgsConstructor
-@Table(name = "subject")
-public class Subject {
+public class Register {
     @Id
-    @Column(name = "subject_id")
-    private String subjectId;
+    @Column(name = "register_id", nullable = false)
+    private String registerId;
 
-    @Column(name = "subject_name")
-    private String subjectName;
+    @ManyToOne
+    @JoinColumn(name = "student_id", nullable = false)
+    private Student student;
 
-    @ManyToMany(mappedBy = "subjects")
-    private Set<Teacher> teachers;
+    @ManyToOne
+    @JoinColumn(name = "class_id", nullable = false)
+    private Class clazz;
+
+    @Column(name = "registration_date")
+    private LocalDate registrationDate;
 
     @Column(name = "created_at")
     @CreationTimestamp

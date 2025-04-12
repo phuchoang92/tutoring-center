@@ -28,10 +28,10 @@ public class AuthServiceImpl implements AuthService {
         if (Objects.isNull(student)){
             throw new RuntimeException("No account found");
         }
-        JwtResponse jwtResponse = JwtResponse.builder()
-                .email(student.getEmail())
-                .roles(Collections.singletonList("Student"))
-                .build();
+//        JwtResponse jwtResponse = JwtResponse.builder()
+//                .email(student.getEmail())
+//                .roles(Collections.singletonList("Student"))
+//                .build();
         return null;
     }
 }

@@ -6,32 +6,32 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.Set;
-
+import java.time.LocalTime;
+import java.util.UUID;
 
 @Entity
+@Table(name = "class_schedule")
 @Getter
 @Setter
 @ToString
-@Builder
-@Table(name = "students")
-@AllArgsConstructor
 @RequiredArgsConstructor
-public class Student {
+public class ClassSchedule {
     @Id
-    @Column(name = "student_id", nullable = false)
-    private String studentId;
+    @Column(name = "class_schedule_id", nullable = false)
+    private UUID id;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @ManyToOne
+    @JoinColumn(name = "class_id", nullable = false)
+    private Class clazz;
 
-    @OneToMany(mappedBy = "student")
-    @ToString.Exclude
-    private Set<Register> registers;
+    @Column(name = "day_of_week")
+    private String dayOfWeek;
 
-    @Column(name = "current_school")
-    private String currentSchool;
+    @Column(name = "start_time")
+    private LocalTime startTime;
+
+    @Column(name = "end_time")
+    private LocalTime endTime;
 
     @Column(name = "created_at")
     @CreationTimestamp

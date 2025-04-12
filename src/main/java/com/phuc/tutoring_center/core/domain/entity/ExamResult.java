@@ -4,34 +4,33 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.proxy.HibernateProxy;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Set;
-
+import java.util.Objects;
+import java.util.UUID;
 
 @Entity
+@Table(name = "exam_results")
 @Getter
 @Setter
 @ToString
-@Builder
-@Table(name = "students")
-@AllArgsConstructor
 @RequiredArgsConstructor
-public class Student {
+public class ExamResult {
     @Id
-    @Column(name = "student_id", nullable = false)
-    private String studentId;
+    @Column(name = "exam_result_id")
+    private UUID id;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @ManyToOne
+    @JoinColumn(name = "exam_id", nullable = false)
+    private Exam exam;
 
-    @OneToMany(mappedBy = "student")
-    @ToString.Exclude
-    private Set<Register> registers;
+    @ManyToOne
+    @JoinColumn(name = "student_id", nullable = false)
+    private Student student;
 
-    @Column(name = "current_school")
-    private String currentSchool;
+    private BigDecimal grade;
 
     @Column(name = "created_at")
     @CreationTimestamp

@@ -36,14 +36,7 @@ public class StudentServiceImpl implements StudentService {
         String passwordHashed = BCrypt.hashpw(registerDTO.getPassword(), BCrypt.gensalt(12));
         Student newStudent = Student.builder()
                 .studentId(String.valueOf(UUID.randomUUID()))
-                .name(registerDTO.getName())
-                .address(registerDTO.getAddress())
-                .registrationDate(LocalDate.now())
-                .phoneNumber(registerDTO.getPhoneNumber())
-                .dateOfBirth(registerDTO.getDateOfBirth())
                 .currentSchool(registerDTO.getCurrentSchool())
-                .email(registerDTO.getEmail())
-                .password(passwordHashed)
                 .build();
         studentRepository.save(newStudent);
         return newStudent;
