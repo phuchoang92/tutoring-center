@@ -16,6 +16,9 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User implements UserDetails {
     @Id
     private UUID id;

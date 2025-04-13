@@ -13,7 +13,9 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
+@Builder
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class UserActivity {
     @Id
     @Column(name = "user_activity_id", nullable = false)

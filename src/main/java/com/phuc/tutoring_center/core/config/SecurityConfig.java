@@ -1,9 +1,5 @@
 package com.phuc.tutoring_center.core.config;
 
-import com.phuc.tutoring_center.core.domain.entity.Student;
-import com.phuc.tutoring_center.core.exception.BusinessException;
-import com.phuc.tutoring_center.core.repository.StudentRepository;
-import com.phuc.tutoring_center.core.service.StudentService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

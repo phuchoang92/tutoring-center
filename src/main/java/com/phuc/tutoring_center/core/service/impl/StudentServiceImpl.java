@@ -2,12 +2,14 @@ package com.phuc.tutoring_center.core.service.impl;
 
 import com.phuc.tutoring_center.core.domain.dto.request.StudentRegisterDTO;
 import com.phuc.tutoring_center.core.domain.entity.Student;
+import com.phuc.tutoring_center.core.domain.entity.User;
 import com.phuc.tutoring_center.core.repository.StudentRepository;
+import com.phuc.tutoring_center.core.repository.UserRepository;
 import com.phuc.tutoring_center.core.service.StudentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -17,9 +19,11 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 @Service
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
+    private final UserRepository userRepository;
 
-    public StudentServiceImpl(StudentRepository studentRepository) {
+    public StudentServiceImpl(StudentRepository studentRepository, UserRepository userRepository) {
         this.studentRepository = studentRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -28,14 +32,26 @@ public class StudentServiceImpl implements StudentService {
         if (!validateRegisterRequest(registerDTO)){
             throw new RuntimeException("Invalid field");
         }
-        Student student = studentRepository.findByPhoneNumber(registerDTO.getPhoneNumber())
+        User student = userRepository.findByEmail(registerDTO.getEmail())
                 .orElse(null);
         if (!Objects.isNull(student)){
             throw new RuntimeException("This phone number has existed");
         }
         String passwordHashed = BCrypt.hashpw(registerDTO.getPassword(), BCrypt.gensalt(12));
+
+        User user = User.builder()
+                .id(UUID.randomUUID())
+                .phoneNumber(registerDTO.getPhoneNumber())
+                .email(registerDTO.getEmail())
+                .password(passwordHashed)
+                .createdAt(LocalDateTime.now())
+                .build();
+        userRepository.save(user);
+
         Student newStudent = Student.builder()
                 .studentId(String.valueOf(UUID.randomUUID()))
+                .user(user)
+                .createdAt(LocalDateTime.now())
                 .currentSchool(registerDTO.getCurrentSchool())
                 .build();
         studentRepository.save(newStudent);

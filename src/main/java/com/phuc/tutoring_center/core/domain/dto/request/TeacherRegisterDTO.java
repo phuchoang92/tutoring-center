@@ -3,16 +3,14 @@ package com.phuc.tutoring_center.core.domain.dto.request;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class StudentRegisterDTO {
+public class TeacherRegisterDTO {
     private String name;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
@@ -26,5 +24,4 @@ public class StudentRegisterDTO {
 
     private String password;
 
-    private String currentSchool;
 }

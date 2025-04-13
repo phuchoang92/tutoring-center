@@ -3,7 +3,6 @@ package com.phuc.tutoring_center.core.repository;
 import com.phuc.tutoring_center.core.domain.entity.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.NativeQuery;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 

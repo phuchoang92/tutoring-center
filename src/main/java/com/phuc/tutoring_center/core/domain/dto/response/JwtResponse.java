@@ -1,5 +1,6 @@
 package com.phuc.tutoring_center.core.domain.dto.response;
 
+import com.phuc.tutoring_center.core.domain.entity.RefreshToken;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,10 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class JwtResponse {
-    private String token;
-    private String type = "Bearer";
-    private Long id;
-    private String username;
-    private String email;
-    private List<String> roles;
+    private String accessToken;
+    private RefreshToken refreshToken;
+    private String tokenType;
 }
