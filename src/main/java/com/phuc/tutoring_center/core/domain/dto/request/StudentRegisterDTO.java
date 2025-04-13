@@ -1,4 +1,4 @@
-package com.phuc.tutoring_center.core.dto.request;
+package com.phuc.tutoring_center.core.domain.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDate;
 
 @Data
-@Slf4j
 @AllArgsConstructor
 @NoArgsConstructor
 public class StudentRegisterDTO {

@@ -1,7 +1,8 @@
 package com.phuc.tutoring_center.core.controller;
 
-import com.phuc.tutoring_center.core.dto.request.LoginRequest;
-import com.phuc.tutoring_center.core.dto.response.JwtResponse;
+import com.phuc.tutoring_center.core.domain.dto.request.LoginRequest;
+import com.phuc.tutoring_center.core.domain.dto.request.StudentRegisterDTO;
+import com.phuc.tutoring_center.core.domain.dto.request.TeacherRegisterDTO;
 import com.phuc.tutoring_center.core.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 public class AuthController {
 
     private final AuthService authService;
@@ -21,7 +22,17 @@ public class AuthController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<JwtResponse> authenticateUser(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
        return ResponseEntity.ok(authService.signIn(loginRequest));
+    }
+
+    @PostMapping("/register/student")
+    public ResponseEntity<?> registerStudent(@RequestBody StudentRegisterDTO registerRequest){
+        return ResponseEntity.ok(authService.registerStudent(registerRequest));
+    }
+
+    @PostMapping("/register/teacher")
+    public ResponseEntity<?> registerTeacher(@RequestBody TeacherRegisterDTO registerRequest){
+        return ResponseEntity.ok(authService.registerTeacher(registerRequest));
     }
 }
