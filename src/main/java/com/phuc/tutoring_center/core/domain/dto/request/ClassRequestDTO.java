@@ -1,26 +1,34 @@
 package com.phuc.tutoring_center.core.domain.dto.request;
 
-import lombok.AllArgsConstructor;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class ClassRequestDTO {
+    @NotBlank(message = "Class name is required")
     private String className;
 
-    private String schedule;
-
-    private String description;
-
-    private String maxStudents;
-
+    @NotBlank(message = "Teacher ID is required")
     private String teacherId;
 
-    private String price;
-
+    @NotBlank(message = "Start date is required")
     private String startDate;
 
+    @NotBlank(message = "End date is required")
     private String endDate;
+
+    @NotBlank(message = "Price is required")
+    private String price;
+
+    @NotBlank(message = "Maximum students is required")
+    private String maxStudents;
+
+    @NotEmpty(message = "At least one schedule is required")
+    @Valid
+    private List<ScheduleRequestDTO> schedules;
 }
