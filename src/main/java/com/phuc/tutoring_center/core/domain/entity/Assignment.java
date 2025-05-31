@@ -5,31 +5,34 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
-@ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "assignment")
 public class Assignment {
     @Id
-    @Column(name = "id", nullable = false)
+    @Column(name = "assignment_id")
     private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "class_id", nullable = false)
     private Class clazz;
 
-    @Column
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "subject")
+    @Column(name = "subject", nullable = false)
     private String subject;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "closed_time", nullable = false)
@@ -37,6 +40,10 @@ public class Assignment {
 
     @Column(name = "due_time")
     private LocalDateTime dueTime;
+
+    @OneToMany(mappedBy = "assignment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<AssignmentFile> files = new ArrayList<>();
 
     @Column(name = "created_at")
     @CreationTimestamp

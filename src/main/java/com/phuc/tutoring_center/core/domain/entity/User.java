@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -23,32 +24,42 @@ import java.util.UUID;
 @AllArgsConstructor
 public class User implements UserDetails {
     @Id
+    @Column(name = "user_id")
     private UUID id;
 
-    @Column(name = "phone_number", nullable = false, unique = true)
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
+
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", unique = true)
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     private String password;
 
-    @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
+    @Column(name = "role")
     private UserRole role;
 
-    @Column(name = "is_enabled", nullable = false)
-    private boolean enabled = true;
+    @Column(name = "enabled")
+    private boolean enabled;
 
-    @Column(name = "is_account_non_expired", nullable = false)
-    private boolean accountNonExpired = true;
+    @Column(name = "account_non_expired")
+    private boolean accountNonExpired;
 
-    @Column(name = "is_account_non_locked", nullable = false)
-    private boolean accountNonLocked = true;
+    @Column(name = "account_non_locked")
+    private boolean accountNonLocked;
 
-    @Column(name = "is_credentials_non_expired", nullable = false)
-    private boolean credentialsNonExpired = true;
+    @Column(name = "credentials_non_expired")
+    private boolean credentialsNonExpired;
 
     @Column(name = "created_at")
     @CreationTimestamp

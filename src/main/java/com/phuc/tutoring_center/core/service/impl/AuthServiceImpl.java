@@ -1,7 +1,6 @@
 package com.phuc.tutoring_center.core.service.impl;
 
 import com.phuc.tutoring_center.core.auth.JwtService;
-import com.phuc.tutoring_center.core.auth.UserService;
 import com.phuc.tutoring_center.core.domain.dto.request.LoginRequest;
 import com.phuc.tutoring_center.core.domain.dto.request.StudentRegisterDTO;
 import com.phuc.tutoring_center.core.domain.dto.request.TeacherRegisterDTO;
@@ -11,7 +10,7 @@ import com.phuc.tutoring_center.core.domain.entity.User;
 import com.phuc.tutoring_center.core.exception.BusinessException;
 import com.phuc.tutoring_center.core.service.AuthService;
 import com.phuc.tutoring_center.core.service.StudentService;
-import jakarta.validation.Valid;
+import com.phuc.tutoring_center.core.service.TeacherService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,40 +23,39 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 public class AuthServiceImpl implements AuthService {
-    private final UserService userService;
-    private final StudentService studentService;
-    private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+    private final StudentService studentService;
+    private final TeacherService teacherService;
 
-    public AuthServiceImpl(UserService userService, StudentService studentService, JwtService jwtService, AuthenticationManager authenticationManager) {
-        this.userService = userService;
-        this.studentService = studentService;
-        this.jwtService = jwtService;
+    public AuthServiceImpl(
+            AuthenticationManager authenticationManager,
+            JwtService jwtService,
+            StudentService studentService,
+            TeacherService teacherService
+    ) {
         this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+        this.studentService = studentService;
+        this.teacherService = teacherService;
     }
 
     @Override
     @Transactional
-    public JwtResponse signIn(@Valid LoginRequest loginRequest) {
+    public JwtResponse signIn(LoginRequest loginRequest) {
         try {
             log.debug("Attempting to authenticate user: {}", loginRequest.getEmail());
             
             Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getEmail(),
+                            loginRequest.getPassword()
+                    )
             );
-            
+
             SecurityContextHolder.getContext().setAuthentication(authentication);
             User user = (User) authentication.getPrincipal();
-
-            if (!user.isEnabled()) {
-                throw new BusinessException("Account is disabled", 401, "ACCOUNT_DISABLED");
-            }
-
-            if (!user.isAccountNonLocked()) {
-                throw new BusinessException("Account is locked", 401, "ACCOUNT_LOCKED");
-            }
-
-            userService.updateLastLogin(user.getEmail());
+            
             String accessToken = jwtService.generateTokenAccess(user);
             RefreshToken refreshToken = jwtService.generateRefreshToken(user);
 
@@ -86,6 +84,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public Object registerTeacher(TeacherRegisterDTO registerDTO) {
-        return null;
+        return teacherService.registerTeacher(registerDTO);
     }
 }
