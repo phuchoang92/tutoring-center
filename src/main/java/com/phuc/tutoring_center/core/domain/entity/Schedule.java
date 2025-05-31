@@ -5,33 +5,39 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.UUID;
 
 @Entity
-@Table(name = "class_schedule")
 @Getter
 @Setter
-@ToString
-@RequiredArgsConstructor
-public class ClassSchedule {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "schedule")
+public class Schedule {
     @Id
-    @Column(name = "class_schedule_id", nullable = false)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "schedule_id")
+    private String scheduleId;
 
     @ManyToOne
     @JoinColumn(name = "class_id", nullable = false)
     private Class clazz;
 
-    @Column(name = "day_of_week")
-    private String dayOfWeek;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "day_of_week", nullable = false)
+    private DayOfWeek dayOfWeek;
 
-    @Column(name = "start_time")
+    @Column(name = "start_time", nullable = false)
     private LocalTime startTime;
 
-    @Column(name = "end_time")
+    @Column(name = "end_time", nullable = false)
     private LocalTime endTime;
+
+    @Column(name = "room", nullable = false)
+    private String room;
 
     @Column(name = "created_at")
     @CreationTimestamp
@@ -40,4 +46,4 @@ public class ClassSchedule {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-}
+} 

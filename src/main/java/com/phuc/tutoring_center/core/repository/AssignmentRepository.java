@@ -1,0 +1,21 @@
+package com.phuc.tutoring_center.core.repository;
+
+import com.phuc.tutoring_center.core.domain.entity.Assignment;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.UUID;
+
+@Repository
+public interface AssignmentRepository extends JpaRepository<Assignment, UUID> {
+    List<Assignment> findByClazz_ClassId(String classId);
+    
+    @Query("SELECT a FROM Assignment a WHERE a.clazz.teacher.teacherId = :teacherId")
+    List<Assignment> findByTeacherId(@Param("teacherId") UUID teacherId);
+    
+    @Query("SELECT a FROM Assignment a JOIN a.clazz.registers r WHERE r.student.studentId = :studentId")
+    List<Assignment> findByStudentId(@Param("studentId") String studentId);
+} 
