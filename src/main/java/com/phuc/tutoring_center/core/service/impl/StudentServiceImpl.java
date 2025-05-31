@@ -3,77 +3,125 @@ package com.phuc.tutoring_center.core.service.impl;
 import com.phuc.tutoring_center.core.domain.dto.request.StudentRegisterDTO;
 import com.phuc.tutoring_center.core.domain.entity.Student;
 import com.phuc.tutoring_center.core.domain.entity.User;
+import com.phuc.tutoring_center.core.exception.BusinessException;
 import com.phuc.tutoring_center.core.repository.StudentRepository;
 import com.phuc.tutoring_center.core.repository.UserRepository;
 import com.phuc.tutoring_center.core.service.StudentService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final UserRepository userRepository;
-
-    public StudentServiceImpl(StudentRepository studentRepository, UserRepository userRepository) {
-        this.studentRepository = studentRepository;
-        this.userRepository = userRepository;
-    }
+    private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Student registerStudent(StudentRegisterDTO registerDTO) {
-        log.info("Start register student with request: {}", registerDTO);
-        if (!validateRegisterRequest(registerDTO)){
-            throw new RuntimeException("Invalid field");
+    @Transactional
+    public Student registerStudent(@Valid StudentRegisterDTO registerDTO) {
+        log.info("Starting student registration for email: {}", registerDTO.getEmail());
+        
+        validateRegisterRequest(registerDTO);
+        
+        // Check if user already exists
+        if (userRepository.findByEmail(registerDTO.getEmail()).isPresent()) {
+            log.warn("Registration failed: Email {} already exists", registerDTO.getEmail());
+            throw new BusinessException("Email already exists", 400, "EMAIL_EXISTS");
         }
-        User student = userRepository.findByEmail(registerDTO.getEmail())
-                .orElse(null);
-        if (!Objects.isNull(student)){
-            throw new RuntimeException("This phone number has existed");
-        }
-        String passwordHashed = BCrypt.hashpw(registerDTO.getPassword(), BCrypt.gensalt(12));
 
+        // Create user account
         User user = User.builder()
                 .id(UUID.randomUUID())
                 .phoneNumber(registerDTO.getPhoneNumber())
                 .email(registerDTO.getEmail())
-                .password(passwordHashed)
+                .password(passwordEncoder.encode(registerDTO.getPassword()))
+                .role(User.UserRole.STUDENT)
+                .enabled(true)
+                .accountNonExpired(true)
+                .accountNonLocked(true)
+                .credentialsNonExpired(true)
                 .createdAt(LocalDateTime.now())
                 .build();
+        
         userRepository.save(user);
+        log.debug("Created user account for student: {}", user.getEmail());
 
-        Student newStudent = Student.builder()
-                .studentId(String.valueOf(UUID.randomUUID()))
+        // Create student profile
+        Student student = Student.builder()
+                .studentId(UUID.randomUUID().toString())
                 .user(user)
-                .createdAt(LocalDateTime.now())
                 .currentSchool(registerDTO.getCurrentSchool())
+                .createdAt(LocalDateTime.now())
                 .build();
-        studentRepository.save(newStudent);
-        return newStudent;
+        
+        studentRepository.save(student);
+        log.info("Successfully registered student: {}", student.getStudentId());
+        
+        return student;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Student> listStudents() {
-        return null;
+        log.debug("Fetching all students");
+        List<Student> students = studentRepository.findAll();
+        log.info("Retrieved {} students", students.size());
+        return students;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Student getStudentInformation(String id) {
-        return null;
+        log.debug("Fetching student information for ID: {}", id);
+        
+        if (!StringUtils.hasText(id)) {
+            throw new BusinessException("Student ID is required", 400, "INVALID_ID");
+        }
+
+        return studentRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("Student not found with ID: {}", id);
+                    return new BusinessException("Student not found", 404, "STUDENT_NOT_FOUND");
+                });
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Student> listStudentsByClass() {
-        return null;
+        log.debug("Fetching students grouped by class");
+        // TODO: Implement this method when Class entity and relationships are properly set up
+        throw new BusinessException("Method not implemented", 501, "NOT_IMPLEMENTED");
     }
 
-    boolean validateRegisterRequest(StudentRegisterDTO registerDTO){
-        return !Objects.isNull(registerDTO.getPhoneNumber());
+    private void validateRegisterRequest(StudentRegisterDTO registerDTO) {
+        log.debug("Validating registration request for email: {}", registerDTO.getEmail());
+
+        if (!StringUtils.hasText(registerDTO.getEmail())) {
+            throw new BusinessException("Email is required", 400, "INVALID_EMAIL");
+        }
+
+        if (!StringUtils.hasText(registerDTO.getPassword())) {
+            throw new BusinessException("Password is required", 400, "INVALID_PASSWORD");
+        }
+
+        if (!StringUtils.hasText(registerDTO.getPhoneNumber())) {
+            throw new BusinessException("Phone number is required", 400, "INVALID_PHONE");
+        }
+
+        if (!StringUtils.hasText(registerDTO.getCurrentSchool())) {
+            throw new BusinessException("Current school is required", 400, "INVALID_SCHOOL");
+        }
     }
 }
