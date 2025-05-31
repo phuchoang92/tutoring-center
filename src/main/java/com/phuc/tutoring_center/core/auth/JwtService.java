@@ -3,14 +3,9 @@ package com.phuc.tutoring_center.core.auth;
 import com.phuc.tutoring_center.core.domain.entity.RefreshToken;
 import com.phuc.tutoring_center.core.domain.entity.User;
 import com.phuc.tutoring_center.core.repository.RefreshTokenRepository;
-import com.phuc.tutoring_center.core.service.TokenBlacklistService;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,10 +16,14 @@ import io.jsonwebtoken.security.Keys;
 
 import java.security.Key;
 import java.util.Base64;
+import java.util.Objects;
+import java.security.Key;
 import java.time.Instant;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -45,12 +44,10 @@ public class JwtService {
 
     private Key key;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final TokenBlacklistService tokenBlacklistService;
 
     @Autowired
-    public JwtService(RefreshTokenRepository refreshTokenRepository, TokenBlacklistService tokenBlacklistService) {
+    public JwtService(RefreshTokenRepository refreshTokenRepository) {
         this.refreshTokenRepository = refreshTokenRepository;
-        this.tokenBlacklistService = tokenBlacklistService;
     }
 
     @PostConstruct
@@ -89,58 +86,11 @@ public class JwtService {
         return refreshTokenRepository.save(refreshToken);
     }
 
-    public Claims getAllClaimsFromToken(String token) {
+    private Claims getALlClaimsFromToken(String token){
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
-                .parseClaimsJws(token)
+                .parseClaimsJwt(token)
                 .getBody();
-    }
-
-    public String getUsernameFromToken(String token) {
-        return getClaimFromToken(token, Claims::getSubject);
-    }
-
-    public Date getExpirationDateFromToken(String token) {
-        return getClaimFromToken(token, Claims::getExpiration);
-    }
-
-    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = getAllClaimsFromToken(token);
-        return claimsResolver.apply(claims);
-    }
-
-    public boolean validateToken(String token) {
-        try {
-            if (tokenBlacklistService.isBlacklisted(token)) {
-                return false;
-            }
-            
-            Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token);
-            return true;
-        } catch (SignatureException ex) {
-            return false;
-        } catch (MalformedJwtException ex) {
-            return false;
-        } catch (ExpiredJwtException ex) {
-            return false;
-        } catch (UnsupportedJwtException ex) {
-            return false;
-        } catch (IllegalArgumentException ex) {
-            return false;
-        }
-    }
-
-    public boolean isTokenExpired(String token) {
-        final Date expiration = getExpirationDateFromToken(token);
-        return expiration.before(new Date());
-    }
-
-    public void invalidateToken(String token) {
-        Date expiration = getExpirationDateFromToken(token);
-        tokenBlacklistService.blacklistToken(token, expiration.getTime());
     }
 }
